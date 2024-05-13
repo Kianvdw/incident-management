@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Incident Management System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Incident Management Form</h1>
+    </header>
+    <main>
+        <form action="/" method="post" enctype="multipart/form-data">
+            {% if case_to_edit %}
+                <input type="hidden" name="case_number" value="{{ case_to_edit[0] }}">
+            {% endif %}
+            Date/Time Reported: <input type="datetime-local" name="date_reported" value="{{ case_to_edit[1] if case_to_edit else '' }}"><br>
+            Date/Time Occurred: <input type="datetime-local" name="date_occurred" value="{{ case_to_edit[2] if case_to_edit else '' }}"><br>
+            Type of Incident: <input type="text" name="type" value="{{ case_to_edit[3] if case_to_edit else '' }}"><br>
+            Location: <input type="text" name="location" value="{{ case_to_edit[4] if case_to_edit else '' }}"><br>
+            Description: <input type="text" name="description" value="{{ case_to_edit[5] if case_to_edit else '' }}"><br>
+            Severity Level: <select name="severity">
+                <option value="Critical">Critical</option>
+                <option value="Major">Major</option>
+                <option value="Minor">Minor</option>
+            </select><br>
+            Personnel Involved: <input type="text" name="personnel_involved" value="{{ case_to_edit[7] if case_to_edit else '' }}"><br>
+            Witnesses: <input type="text" name="witnesses" value="{{ case_to_edit[8] if case_to_edit else '' }}"><br>
+            Actions Taken: <select name="actions_taken">
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+                <option value="N/A">N/A</option>
+            </select><br>
+            Follow-up Required: <select name="follow_up_required">
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+                <option value="N/A">N/A</option>
+            </select><br>
+            Status: <select name="status">
+                <option value="Created">Created</option>
+                <option value="Inprocess">Inprocess</option>
+                <option value="Finalised">Finalised</option>
+            </select><br>
+            Root Cause Analysis Done: <select name="root_cause_analysis">
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+                <option value="N/A">N/A</option>
+            </select><br>
+            Preventive Measures Required: <select name="preventive_measures">
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+                <option value="N/A">N/A</option>
+            </select><br>
+            Documentation attached: <select name="documentation_attached">
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+                <option value="N/A">N/A</option>
+            </select><br>
+            Notes: <input type="text" name="notes" value="{{ case_to_edit[15] if case_to_edit else '' }}"><br>
+            Documents: <input type="file" name="document" multiple><br>
+            <input type="submit" value="Submit">
+        </form>
+        <h2>Incidents List</h2>
+        <table>
+            <tr>
+                <th>Case Number</th>
+                <th>Date Reported</th>
+                <th>Date Occurred</th>
+                <th>Type</th>
+                <th>Location</th>
+                <th>Description</th>
+                <th>Severity</th>
+                <th>Personnel Involved</th>
+                <th>Witnesses</th>
+                <th>Actions Taken</th>
+                <th>Follow-up Required</th>
+                <th>Status</th>
+                <th>Root Cause Analysis</th>
+                <th>Preventive Measures</th>
+                <th>Documentation Attached</th>
+                <th>Notes</th>
+                <th>Documents</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+            {% for incident in incidents %}
+            <tr>
+                <td>{{ incident[0] }}</td>
+                <td>{{ incident[1] }}</td>
+                <td>{{ incident[2] }}</td>
+                <td>{{ incident[3] }}</td>
+                <td>{{ incident[4] }}</td>
+                <td>{{ incident[5] }}</td>
+                <td>{{ incident[6] }}</td>
+                <td>{{ incident[7] }}</td>
+                <td>{{ incident[8] }}</td>
+                <td>{{ incident[9] }}</td>
+                <td>{{ incident[10] }}</td>
+                <td>{{ incident[11] }}</td>
+                <td>{{ incident[12] }}</td>
+                <td>{{ incident[13] }}</td>
+                <td>{{ incident[14] }}</td>
+                <td>{{ incident[15] }}</td>
+                <td>
+                    {% if incident[16] %}
+                        {% for file in incident[16].split(',') %}
+                            <a href="{{ url_for('download_document', filename=file) }}">Download</a><br>
+                        {% endfor %}
+                    {% endif %}
+                </td>
+                <td><a href="/edit/{{ incident[0] }}">Edit</a></td>
+                <td>
+                    <form method="post" action="/delete/{{ incident[0] }}">
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </main>
+</body>
+</html>
